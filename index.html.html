@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Metria - Produtividade, Hábitos & Recompensas</title>
   
   <!-- Configurações PWA -->
@@ -26,7 +26,7 @@
   <style>
     :root {
       --bg: #f8fafc;
-      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: rgba(255, 255, 255, 0.98);
       --card-border: rgba(226, 232, 240, 0.9);
       --accent-blue: #3b82f6;
       --accent-purple: #8b5cf6;
@@ -35,10 +35,21 @@
       --accent-red: #ef4444;
       --text-main: #0f172a;
       --text-sub: #64748b;
-      --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.3px; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Poppins', system-ui, sans-serif; 
+      letter-spacing: -0.3px; 
+    }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
 
     body {
       background: var(--bg);
@@ -48,8 +59,8 @@
       color: var(--text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-start;
+      padding: 12px;
       min-height: 100vh;
     }
 
@@ -60,12 +71,13 @@
       background: #fff;
       border: 1px solid var(--card-border);
       border-radius: 24px;
-      padding: 32px 24px;
+      padding: 24px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
       box-shadow: var(--shadow);
       text-align: center;
+      margin-top: 20px;
     }
 
     .auth-input {
@@ -88,20 +100,20 @@
       cursor: pointer;
     }
 
-    /* Container Principal */
+    /* Container Principal Responsivo */
     .app-card {
       width: 100%;
-      max-width: 520px;
+      max-width: 480px;
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 24px;
+      border-radius: 24px;
+      padding: 16px;
       display: none;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       box-shadow: var(--shadow);
-      min-height: 720px;
+      min-height: 80vh;
       position: relative;
     }
 
@@ -110,12 +122,12 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
 
-    .app-title-fixed { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); }
-    .menu-toggle { background: #fff; border: 1px solid var(--card-border); width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-    .coins-display { background: #fff; border: 1px solid var(--card-border); padding: 6px 14px; border-radius: 14px; font-weight: 600; color: #d97706; font-size: 0.88rem; }
+    .app-title-fixed { font-size: 1.1rem; font-weight: 700; color: var(--accent-blue); }
+    .menu-toggle { background: #fff; border: 1px solid var(--card-border); width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .coins-display { background: #fff; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 12px; font-weight: 600; color: #d97706; font-size: 0.82rem; }
 
     /* Sidebar Drawer */
     .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -127,56 +139,69 @@
     .nav-item.active, .nav-item:hover { background: rgba(59, 130, 246, 0.08); color: var(--accent-blue); }
 
     /* Meta de 80% */
-    .meta-box { background: #ffffff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 16px; }
-    .meta-header { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px; color: var(--text-sub); }
-    .progress-bar-track { height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .meta-box { background: #ffffff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; }
+    .meta-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; color: var(--text-sub); }
+    .progress-bar-track { height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); border-radius: 10px; transition: width 0.4s ease; }
 
-    .view-screen { display: none; flex-direction: column; gap: 14px; }
+    .view-screen { display: none; flex-direction: column; gap: 12px; }
     .view-screen.active { display: flex; }
 
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .dash-card { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
-    .dash-card-val { font-size: 1.3rem; font-weight: 700; color: var(--accent-blue); }
-    .dash-card-lbl { font-size: 0.75rem; color: var(--text-sub); }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .dash-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+    .dash-card-val { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); }
+    .dash-card-lbl { font-size: 0.7rem; color: var(--text-sub); }
 
-    /* Formulários */
-    .task-form-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .task-input-row { display: flex; gap: 8px; }
-    input[type="text"], select { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--bg); font-size: 0.82rem; outline: none; }
+    /* Formulários Ajustados para Celular */
+    .task-form-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .task-input-row { display: flex; flex-direction: column; gap: 8px; }
     
-    .color-swatch-picker { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+    @media (min-width: 400px) {
+      .task-input-row { flex-direction: row; }
+    }
+
+    input[type="text"], select { 
+      width: 100%;
+      padding: 10px 12px; 
+      border-radius: 10px; 
+      border: 1px solid var(--card-border); 
+      background: var(--bg); 
+      font-size: 0.82rem; 
+      outline: none; 
+    }
+    
+    .color-swatch-picker { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
     .color-circle { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
     .color-circle.selected { border-color: #0f172a; transform: scale(1.15); }
 
-    .date-navigator { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.82rem; font-weight: 600; }
+    .date-navigator { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--card-border); padding: 8px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
     .date-nav-btn { background: none; border: none; color: var(--accent-blue); cursor: pointer; font-weight: bold; }
 
-    .category-tabs { display: flex; gap: 6px; background: #e2e8f0; padding: 4px; border-radius: 12px; }
-    .cat-tab-btn { flex: 1; padding: 6px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 0.78rem; font-weight: 500; cursor: pointer; }
+    .category-tabs { display: flex; gap: 4px; background: #e2e8f0; padding: 3px; border-radius: 10px; }
+    .cat-tab-btn { flex: 1; padding: 6px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 0.75rem; font-weight: 500; cursor: pointer; }
     .cat-tab-btn.active { background: #fff; color: var(--accent-blue); font-weight: 600; }
 
     .task-list-modern { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
-    .task-card-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--accent-blue); }
+    .task-card-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--accent-blue); gap: 8px; }
     .task-card-modern.p-alta { border-left-color: var(--accent-red); }
     .task-card-modern.p-media { border-left-color: var(--accent-yellow); }
     .task-card-modern.p-baixa { border-left-color: var(--accent-green); }
     .task-card-modern.completed { opacity: 0.5; text-decoration: line-through; }
 
-    .client-color-pill { font-size: 0.72rem; padding: 3px 10px; border-radius: 10px; color: white; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .client-color-pill { font-size: 0.68rem; padding: 2px 8px; border-radius: 8px; color: white; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; }
     .task-actions-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; opacity: 0.7; }
 
-    /* Hábitos */
-    .habit-matrix-container { display: flex; flex-direction: column; gap: 12px; }
-    .habit-row-matrix { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .habit-days-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-    .day-chip { min-width: 58px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-size: 0.72rem; flex-shrink: 0; }
+    /* Hábitos Responsivos */
+    .habit-matrix-container { display: flex; flex-direction: column; gap: 10px; }
+    .habit-row-matrix { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .habit-days-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+    .day-chip { min-width: 50px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; font-size: 0.68rem; flex-shrink: 0; }
     .day-chip.completed { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); font-weight: 600; }
 
-    /* Recompensas */
-    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 360px; overflow-y: auto; }
-    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 10px; min-height: 120px; }
-    .reward-square-btn { background: rgba(245, 158, 11, 0.1); color: #d97706; padding: 6px 12px; border-radius: 12px; font-weight: 600; font-size: 0.78rem; border: none; cursor: pointer; width: 100%; }
+    /* Recompensas Responsivas */
+    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 360px; overflow-y: auto; }
+    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; min-height: 110px; }
+    .reward-square-btn { background: rgba(245, 158, 11, 0.1); color: #d97706; padding: 6px 10px; border-radius: 10px; font-weight: 600; font-size: 0.72rem; border: none; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
@@ -211,8 +236,8 @@
   <!-- TELA 1: INÍCIO -->
   <div class="view-screen active" id="view-home">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="font-size: 0.95rem;">Painel do dia</h3>
-      <span style="font-size:0.75rem; color:var(--accent-blue); font-weight:600;">📅 Sáb, 19/09/2026</span>
+      <h3 style="font-size: 0.9rem;">Painel do dia</h3>
+      <span style="font-size:0.72rem; color:var(--accent-blue); font-weight:600;">📅 Sáb, 19/09/2026</span>
     </div>
 
     <div class="dashboard-grid">
@@ -226,7 +251,7 @@
       </div>
     </div>
 
-    <h3 style="font-size: 0.95rem; margin-top: 4px;">Resumo de estatísticas</h3>
+    <h3 style="font-size: 0.9rem; margin-top: 4px;">Resumo de estatísticas</h3>
     <div class="dashboard-grid">
       <div class="dash-card">
         <span class="dash-card-val" id="dash-rate" style="color: var(--accent-purple);">0%</span>
@@ -242,8 +267,8 @@
   <!-- TELA 2: MINHAS TAREFAS -->
   <div class="view-screen" id="view-tasks">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="font-size: 0.95rem;">Minhas tarefas</h3>
-      <small style="font-size: 0.7rem; color: var(--accent-purple); font-weight: 600;">✨ Avalia prioridade</small>
+      <h3 style="font-size: 0.9rem;">Minhas tarefas</h3>
+      <small style="font-size: 0.68rem; color: var(--accent-purple); font-weight: 600;">✨ Avalia prioridade</small>
     </div>
 
     <div class="date-navigator">
@@ -262,8 +287,8 @@
       </div>
 
       <div class="task-input-row" id="prof-fields" style="display:none; flex-direction:column; gap:6px;">
-        <input type="text" id="client-name-input" placeholder="Nome do cliente (ex: Cliente Ana)" style="flex:1;">
-        <div style="font-size:0.75rem; color:var(--text-sub);">Selecione a cor do cliente:</div>
+        <input type="text" id="client-name-input" placeholder="Nome do cliente (ex: Cliente Ana)">
+        <div style="font-size:0.72rem; color:var(--text-sub);">Selecione a cor do cliente:</div>
         <div class="color-swatch-picker">
           <div class="color-circle selected" style="background:#0f172a;" onclick="selectColor('#0f172a', this)" title="Preto"></div>
           <div class="color-circle" style="background:#64748b;" onclick="selectColor('#64748b', this)" title="Cinza"></div>
@@ -276,7 +301,7 @@
         </div>
       </div>
 
-      <button onclick="addAiTask()" style="background:var(--accent-blue); color:white; border:none; border-radius:10px; padding:10px; cursor:pointer; font-weight:600; font-size:0.8rem;">+ Criar Tarefa</button>
+      <button onclick="addAiTask()" style="background:var(--accent-blue); color:white; border:none; border-radius:10px; padding:10px; cursor:pointer; font-weight:600; font-size:0.8rem; width: 100%;">+ Criar Tarefa</button>
     </div>
 
     <div class="category-tabs">
@@ -288,18 +313,17 @@
     <div class="task-list-modern" id="task-list"></div>
   </div>
 
-  <!-- TELA 3: HÁBITOS DIÁRIOS (COM CRIAÇÃO DE NOVOS HÁBITOS) -->
+  <!-- TELA 3: HÁBITOS DIÁRIOS -->
   <div class="view-screen" id="view-habits">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="font-size: 0.95rem;">Hábitos diários</h3>
-      <small style="color:var(--accent-purple); font-size:0.7rem; font-weight:600;">+10 moedas cada</small>
+      <h3 style="font-size: 0.9rem;">Hábitos diários</h3>
+      <small style="color:var(--accent-purple); font-size:0.68rem; font-weight:600;">+10 moedas cada</small>
     </div>
 
-    <!-- Formulário para Adicionar Novo Hábito -->
     <div class="task-form-modern">
       <div class="task-input-row">
         <input type="text" id="habit-input" placeholder="Novo hábito (ex: Ler 10 pág, Meditar...)" style="flex:1;">
-        <button onclick="addNewHabit()" style="background:var(--accent-purple); color:white; border:none; border-radius:10px; padding:0 16px; cursor:pointer; font-weight:600; font-size:0.8rem;">+ Criar</button>
+        <button onclick="addNewHabit()" style="background:var(--accent-purple); color:white; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:600; font-size:0.8rem; width: 100%;">+ Criar</button>
       </div>
     </div>
 
@@ -309,21 +333,21 @@
   <!-- TELA 4: RECOMPENSAS -->
   <div class="view-screen" id="view-rewards">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="font-size: 0.95rem;">Recompensas do dia</h3>
-      <button onclick="refreshAiRewards()" style="background:none; border:none; color:var(--accent-blue); font-size:0.75rem; cursor:pointer; font-weight:600;">🔄 Gerar novas</button>
+      <h3 style="font-size: 0.9rem;">Recompensas do dia</h3>
+      <button onclick="refreshAiRewards()" style="background:none; border:none; color:var(--accent-blue); font-size:0.72rem; cursor:pointer; font-weight:600;">🔄 Gerar novas</button>
     </div>
     <div class="rewards-grid" id="rewards-grid"></div>
   </div>
 
   <!-- TELA 5: ESTATÍSTICAS COMPLETAS -->
   <div class="view-screen" id="view-stats">
-    <h3 style="font-size: 0.95rem;">Estatísticas completas</h3>
+    <h3 style="font-size: 0.9rem;">Estatísticas completas</h3>
     <div class="dash-card">
-      <div style="font-size: 0.82rem; font-weight: 600; color: var(--accent-blue);">📅 Desempenho do dia</div>
-      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.8rem; color:var(--text-sub);">
+      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue);">📅 Desempenho do dia</div>
+      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.78rem; color:var(--text-sub);">
         <span>Tarefas concluídas:</span> <b id="st-day-tasks">0</b>
       </div>
-      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.8rem; color:var(--text-sub);">
+      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.78rem; color:var(--text-sub);">
         <span>Moedas ganhas:</span> <b id="st-day-coins" style="color:#d97706;">0</b>
       </div>
     </div>
@@ -493,7 +517,6 @@
     renderTasks();
   }
 
-  // Função para Adicionar Novo Hábito Personalizado
   function addNewHabit() {
     const input = document.getElementById('habit-input');
     const name = input.value.trim();
@@ -551,12 +574,12 @@
         <div style="display:flex; align-items:center; gap:8px;">
           <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
           <div>
-            <div style="font-size:0.83rem;">${task.text}</div>
+            <div style="font-size:0.8rem;">${task.text}</div>
             ${clientTag}
           </div>
         </div>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <small style="font-size:0.7rem; color:var(--text-sub);">+${task.pts} pts</small>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <small style="font-size:0.68rem; color:var(--text-sub);">+${task.pts} pts</small>
           <button class="task-actions-btn" onclick="deleteTask(${task.id})" style="color:var(--accent-red);">🗑️</button>
         </div>
       `;
@@ -578,16 +601,16 @@
         daysHtml += `
           <div class="day-chip ${done ? 'completed' : ''}" onclick="toggleHabitDay(${habit.id}, ${index})">
             <span>${datesHeader[index]}</span>
-            <b style="font-size:0.9rem;">${done ? '✓' : '○'}</b>
+            <b style="font-size:0.85rem;">${done ? '✓' : '○'}</b>
           </div>
         `;
       });
 
       row.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.85rem; font-weight:600;">${habit.name}</span>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:0.72rem; color:var(--accent-purple); font-weight:600;">🔥 ${habit.streak} dias</span>
+          <span style="font-size:0.82rem; font-weight:600;">${habit.name}</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:0.68rem; color:var(--accent-purple); font-weight:600;">🔥 ${habit.streak} dias</span>
             <button class="task-actions-btn" onclick="deleteHabit(${habit.id})" style="color:var(--accent-red); font-size:0.75rem;">🗑️</button>
           </div>
         </div>
@@ -616,8 +639,8 @@
       const card = document.createElement('div');
       card.className = 'reward-square-card';
       card.innerHTML = `
-        <span style="font-size:1.8rem;">${reward.icon}</span>
-        <div style="font-size:0.8rem; font-weight:500;">${reward.name}</div>
+        <span style="font-size:1.6rem;">${reward.icon}</span>
+        <div style="font-size:0.75rem; font-weight:500;">${reward.name}</div>
         <button class="reward-square-btn" onclick="buyReward(${reward.id}, '${reward.name}', ${reward.cost})">
           ${reward.cost} moedas
         </button>
