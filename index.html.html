@@ -198,10 +198,10 @@
     .day-chip { min-width: 50px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; font-size: 0.68rem; flex-shrink: 0; }
     .day-chip.completed { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); font-weight: 600; }
 
-    /* Recompensas Responsivas */
-    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 360px; overflow-y: auto; }
-    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; min-height: 110px; }
-    .reward-square-btn { background: rgba(245, 158, 11, 0.1); color: #d97706; padding: 6px 10px; border-radius: 10px; font-weight: 600; font-size: 0.72rem; border: none; cursor: pointer; width: 100%; }
+    /* Recompensas Sem Corte de Texto/Botão */
+    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 420px; overflow-y: auto; padding-bottom: 8px; }
+    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; }
+    .reward-square-btn { background: rgba(245, 158, 11, 0.12); color: #d97706; padding: 8px 10px; border-radius: 10px; font-weight: 600; font-size: 0.72rem; border: none; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
@@ -330,7 +330,7 @@
     <div class="habit-matrix-container" id="habit-matrix"></div>
   </div>
 
-  <!-- TELA 4: RECOMPENSAS -->
+  <!-- TELA 4: RECOMPENSAS (REAJUSTADA) -->
   <div class="view-screen" id="view-rewards">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3 style="font-size: 0.9rem;">Recompensas do dia</h3>
@@ -339,16 +339,37 @@
     <div class="rewards-grid" id="rewards-grid"></div>
   </div>
 
-  <!-- TELA 5: ESTATÍSTICAS COMPLETAS -->
+  <!-- TELA 5: ESTATÍSTICAS COMPLETAS (DIÁRIA, SEMANAL E MENSAL) -->
   <div class="view-screen" id="view-stats">
     <h3 style="font-size: 0.9rem;">Estatísticas completas</h3>
+
     <div class="dash-card">
-      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue);">📅 Desempenho do dia</div>
+      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue);">📅 Desempenho de Hoje</div>
       <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.78rem; color:var(--text-sub);">
         <span>Tarefas concluídas:</span> <b id="st-day-tasks">0</b>
       </div>
       <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.78rem; color:var(--text-sub);">
-        <span>Moedas ganhas:</span> <b id="st-day-coins" style="color:#d97706;">0</b>
+        <span>Moedas ganhas hoje:</span> <b id="st-day-coins" style="color:#d97706;">0</b>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-purple);">📊 Desempenho Semanal</div>
+      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.78rem; color:var(--text-sub);">
+        <span>Tarefas concluídas na semana:</span> <b id="st-week-tasks">0</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.78rem; color:var(--text-sub);">
+        <span>Média diária de sucesso:</span> <b id="st-week-rate" style="color:var(--accent-green);">0%</b>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-green);">🗓️ Desempenho Mensal</div>
+      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.78rem; color:var(--text-sub);">
+        <span>Total de tarefas no mês:</span> <b id="st-month-tasks">0</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.78rem; color:var(--text-sub);">
+        <span>Acumulado total de moedas:</span> <b id="st-month-coins" style="color:#d97706;">0</b>
       </div>
     </div>
   </div>
@@ -454,6 +475,7 @@
         renderTasks();
         renderHabitsMatrix();
         updateHomeUI();
+        updateStatsUI();
       }
     });
   }
@@ -474,6 +496,7 @@
     if (screen === 'tasks') renderTasks();
     if (screen === 'habits') renderHabitsMatrix();
     if (screen === 'home') updateHomeUI();
+    if (screen === 'stats') updateStatsUI();
 
     toggleMenu();
   }
@@ -683,6 +706,24 @@
     document.getElementById('dash-completed').innerText = completed;
     document.getElementById('dash-rate').innerText = `${pct}%`;
     document.getElementById('dash-habits-count').innerText = `${habitsDoneToday}/${habitsData.length}`;
+  }
+
+  function updateStatsUI() {
+    const todayTasks = tasks.filter(t => t.dateOffset === 0);
+    const completedToday = todayTasks.filter(t => t.completed).length;
+
+    const completedTotal = tasks.filter(t => t.completed).length;
+    const totalAllTasks = tasks.length;
+    const successRateWeek = totalAllTasks === 0 ? 0 : Math.round((completedTotal / totalAllTasks) * 100);
+
+    document.getElementById('st-day-tasks').innerText = completedToday;
+    document.getElementById('st-day-coins').innerText = completedToday * 15;
+
+    document.getElementById('st-week-tasks').innerText = completedTotal;
+    document.getElementById('st-week-rate').innerText = `${successRateWeek}%`;
+
+    document.getElementById('st-month-tasks').innerText = totalAllTasks;
+    document.getElementById('st-month-coins').innerText = coins;
   }
 </script>
 </body>
