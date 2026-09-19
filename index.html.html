@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metria - Produtividade, Hábitos & Recompensas</title>
+  
+  <!-- Configurações PWA -->
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Metria">
+
+  <!-- Fonte Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(226, 232, 240, 0.9);
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.3px; }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* Tela de Autenticação / Login */
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      outline: none;
+      font-size: 0.88rem;
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent-blue);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Container Principal */
+    .app-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 24px;
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: var(--shadow);
+      min-height: 720px;
+      position: relative;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .app-title-fixed { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); }
+    .menu-toggle { background: #fff; border: 1px solid var(--card-border); width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .coins-display { background: #fff; border: 1px solid var(--card-border); padding: 6px 14px; border-radius: 14px; font-weight: 600; color: #d97706; font-size: 0.88rem; }
+
+    /* Sidebar Drawer */
+    .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+    .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #ffffff; z-index: 101; padding: 30px 20px; display: flex; flex-direction: column; gap: 24px; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.08); transition: left 0.3s ease; }
+    .sidebar.active { left: 0; }
+    .nav-list { display: flex; flex-direction: column; gap: 10px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: transparent; border: none; color: var(--text-sub); font-weight: 500; font-size: 0.92rem; cursor: pointer; width: 100%; text-align: left; }
+    .nav-item.active, .nav-item:hover { background: rgba(59, 130, 246, 0.08); color: var(--accent-blue); }
+
+    /* Meta de 80% */
+    .meta-box { background: #ffffff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 16px; }
+    .meta-header { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px; color: var(--text-sub); }
+    .progress-bar-track { height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); border-radius: 10px; transition: width 0.4s ease; }
+
+    .view-screen { display: none; flex-direction: column; gap: 14px; }
+    .view-screen.active { display: flex; }
+
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dash-card { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+    .dash-card-val { font-size: 1.3rem; font-weight: 700; color: var(--accent-blue); }
+    .dash-card-lbl { font-size: 0.75rem; color: var(--text-sub); }
+
+    /* Formulários */
+    .task-form-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .task-input-row { display: flex; gap: 8px; }
+    input[type="text"], select { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--bg); font-size: 0.82rem; outline: none; }
+    
+    .color-swatch-picker { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+    .color-circle { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    .color-circle.selected { border-color: #0f172a; transform: scale(1.15); }
+
+    .date-navigator { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.82rem; font-weight: 600; }
+    .date-nav-btn { background: none; border: none; color: var(--accent-blue); cursor: pointer; font-weight: bold; }
+
+    .category-tabs { display: flex; gap: 6px; background: #e2e8f0; padding: 4px; border-radius: 12px; }
+    .cat-tab-btn { flex: 1; padding: 6px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 0.78rem; font-weight: 500; cursor: pointer; }
+    .cat-tab-btn.active { background: #fff; color: var(--accent-blue); font-weight: 600; }
+
+    .task-list-modern { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+    .task-card-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--accent-blue); }
+    .task-card-modern.p-alta { border-left-color: var(--accent-red); }
+    .task-card-modern.p-media { border-left-color: var(--accent-yellow); }
+    .task-card-modern.p-baixa { border-left-color: var(--accent-green); }
+    .task-card-modern.completed { opacity: 0.5; text-decoration: line-through; }
+
+    .client-color-pill { font-size: 0.72rem; padding: 3px 10px; border-radius: 10px; color: white; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .task-actions-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; opacity: 0.7; }
+
+    /* Hábitos */
+    .habit-matrix-container { display: flex; flex-direction: column; gap: 12px; }
+    .habit-row-matrix { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .habit-days-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+    .day-chip { min-width: 58px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-size: 0.72rem; flex-shrink: 0; }
+    .day-chip.completed { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); font-weight: 600; }
+
+    /* Recompensas */
+    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 360px; overflow-y: auto; }
+    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 10px; min-height: 120px; }
+    .reward-square-btn { background: rgba(245, 158, 11, 0.1); color: #d97706; padding: 6px 12px; border-radius: 12px; font-weight: 600; font-size: 0.78rem; border: none; cursor: pointer; width: 100%; }
+  </style>
+</head>
+<body>
+
+<!-- TELA DE AUTENTICAÇÃO / LOGIN -->
+<div class="auth-container" id="auth-box">
+  <h2 style="color: var(--accent-blue);">⚡ Metria</h2>
+  <p style="font-size: 0.8rem; color: var(--text-sub);">Sincronize suas tarefas e hábitos entre celular e computador.</p>
+  <input type="email" id="auth-email" class="auth-input" placeholder="Seu e-mail">
+  <input type="password" id="auth-pass" class="auth-input" placeholder="Sua senha">
+  <button class="auth-btn" onclick="login()">Entrar / Cadastrar</button>
+</div>
+
+<!-- APLICATIVO PRINCIPAL -->
+<div class="app-card" id="app-box">
+  <div class="top-bar">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="app-title-fixed">⚡ Metria</div>
+    <div class="coins-display">🪙 <span id="coins-count">0</span></div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-header">
+      <span>Meta de conclusão: <b>80%</b></span>
+      <span id="progress-percent" style="color: var(--accent-blue); font-weight: 600;">0%</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- TELA 1: INÍCIO -->
+  <div class="view-screen active" id="view-home">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size: 0.95rem;">Painel do dia</h3>
+      <span style="font-size:0.75rem; color:var(--accent-blue); font-weight:600;">📅 Sáb, 19/09/2026</span>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <span class="dash-card-val" id="dash-pending">0</span>
+        <span class="dash-card-lbl">Tarefas pendentes</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-card-val" id="dash-completed" style="color: var(--accent-green);">0</span>
+        <span class="dash-card-lbl">Tarefas concluídas hoje</span>
+      </div>
+    </div>
+
+    <h3 style="font-size: 0.95rem; margin-top: 4px;">Resumo de estatísticas</h3>
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <span class="dash-card-val" id="dash-rate" style="color: var(--accent-purple);">0%</span>
+        <span class="dash-card-lbl">Taxa de sucesso hoje</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-card-val" id="dash-habits-count" style="color: var(--accent-yellow);">0/3</span>
+        <span class="dash-card-lbl">Hábitos cumpridos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 2: MINHAS TAREFAS -->
+  <div class="view-screen" id="view-tasks">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size: 0.95rem;">Minhas tarefas</h3>
+      <small style="font-size: 0.7rem; color: var(--accent-purple); font-weight: 600;">✨ Avalia prioridade</small>
+    </div>
+
+    <div class="date-navigator">
+      <button class="date-nav-btn" onclick="changeDate(-1)">◄ Anterior</button>
+      <span id="current-view-date">19/09/2026 (Hoje)</span>
+      <button class="date-nav-btn" onclick="changeDate(1)">Próximo ►</button>
+    </div>
+
+    <div class="task-form-modern">
+      <div class="task-input-row">
+        <input type="text" id="task-input" placeholder="Digite sua tarefa..." style="flex:1;">
+        <select id="task-cat-select" onchange="toggleClientFields(this.value)">
+          <option value="pessoal">Pessoal</option>
+          <option value="profissional">Profissional</option>
+        </select>
+      </div>
+
+      <div class="task-input-row" id="prof-fields" style="display:none; flex-direction:column; gap:6px;">
+        <input type="text" id="client-name-input" placeholder="Nome do cliente (ex: Cliente Ana)" style="flex:1;">
+        <div style="font-size:0.75rem; color:var(--text-sub);">Selecione a cor do cliente:</div>
+        <div class="color-swatch-picker">
+          <div class="color-circle selected" style="background:#0f172a;" onclick="selectColor('#0f172a', this)" title="Preto"></div>
+          <div class="color-circle" style="background:#64748b;" onclick="selectColor('#64748b', this)" title="Cinza"></div>
+          <div class="color-circle" style="background:#7209b7;" onclick="selectColor('#7209b7', this)" title="Vinho"></div>
+          <div class="color-circle" style="background:#e5c158;" onclick="selectColor('#e5c158', this)" title="Ouro pastel"></div>
+          <div class="color-circle" style="background:#f472b6;" onclick="selectColor('#f472b6', this)" title="Rosa"></div>
+          <div class="color-circle" style="background:#38bdf8;" onclick="selectColor('#38bdf8', this)" title="Azul claro"></div>
+          <div class="color-circle" style="background:#1e3a8a;" onclick="selectColor('#1e3a8a', this)" title="Azul escuro"></div>
+          <div class="color-circle" style="background:#ee6c4d;" onclick="selectColor('#ee6c4d', this)" title="Goiaba"></div>
+        </div>
+      </div>
+
+      <button onclick="addAiTask()" style="background:var(--accent-blue); color:white; border:none; border-radius:10px; padding:10px; cursor:pointer; font-weight:600; font-size:0.8rem;">+ Criar Tarefa</button>
+    </div>
+
+    <div class="category-tabs">
+      <button class="cat-tab-btn active" onclick="setTaskTab('todas', this)">Todas</button>
+      <button class="cat-tab-btn" onclick="setTaskTab('pessoal', this)">Pessoal</button>
+      <button class="cat-tab-btn" onclick="setTaskTab('profissional', this)">Profissional</button>
+    </div>
+
+    <div class="task-list-modern" id="task-list"></div>
+  </div>
+
+  <!-- TELA 3: HÁBITOS DIÁRIOS (COM CRIAÇÃO DE NOVOS HÁBITOS) -->
+  <div class="view-screen" id="view-habits">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size: 0.95rem;">Hábitos diários</h3>
+      <small style="color:var(--accent-purple); font-size:0.7rem; font-weight:600;">+10 moedas cada</small>
+    </div>
+
+    <!-- Formulário para Adicionar Novo Hábito -->
+    <div class="task-form-modern">
+      <div class="task-input-row">
+        <input type="text" id="habit-input" placeholder="Novo hábito (ex: Ler 10 pág, Meditar...)" style="flex:1;">
+        <button onclick="addNewHabit()" style="background:var(--accent-purple); color:white; border:none; border-radius:10px; padding:0 16px; cursor:pointer; font-weight:600; font-size:0.8rem;">+ Criar</button>
+      </div>
+    </div>
+
+    <div class="habit-matrix-container" id="habit-matrix"></div>
+  </div>
+
+  <!-- TELA 4: RECOMPENSAS -->
+  <div class="view-screen" id="view-rewards">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="font-size: 0.95rem;">Recompensas do dia</h3>
+      <button onclick="refreshAiRewards()" style="background:none; border:none; color:var(--accent-blue); font-size:0.75rem; cursor:pointer; font-weight:600;">🔄 Gerar novas</button>
+    </div>
+    <div class="rewards-grid" id="rewards-grid"></div>
+  </div>
+
+  <!-- TELA 5: ESTATÍSTICAS COMPLETAS -->
+  <div class="view-screen" id="view-stats">
+    <h3 style="font-size: 0.95rem;">Estatísticas completas</h3>
+    <div class="dash-card">
+      <div style="font-size: 0.82rem; font-weight: 600; color: var(--accent-blue);">📅 Desempenho do dia</div>
+      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.8rem; color:var(--text-sub);">
+        <span>Tarefas concluídas:</span> <b id="st-day-tasks">0</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.8rem; color:var(--text-sub);">
+        <span>Moedas ganhas:</span> <b id="st-day-coins" style="color:#d97706;">0</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar Drawer -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="sidebar">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border); padding-bottom:16px;">
+    <h3 style="color: var(--accent-blue);">Metria</h3>
+    <button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()">✕</button>
+  </div>
+  <div class="nav-list">
+    <button class="nav-item active" id="nav-home" onclick="switchScreen('home')"><span>🏠</span> Início</button>
+    <button class="nav-item" id="nav-tasks" onclick="switchScreen('tasks')"><span>📋</span> Minhas tarefas</button>
+    <button class="nav-item" id="nav-habits" onclick="switchScreen('habits')"><span>✨</span> Hábitos diários</button>
+    <button class="nav-item" id="nav-rewards" onclick="switchScreen('rewards')"><span>🎁</span> Recompensas</button>
+    <button class="nav-item" id="nav-stats" onclick="switchScreen('stats')"><span>📊</span> Estatísticas</button>
+    <button class="nav-item" onclick="logout()" style="color:#ef4444; margin-top:20px;"><span>🚪</span> Sair da Conta</button>
+  </div>
+</div>
+
+<script>
+  // CONFIGURAÇÃO REAL DO FIREBASE
+  const firebaseConfig = {
+    apiKey: "AIzaSyA4BePbgAzCUqTyjaatD5hyr2sYjU8a6kQ",
+    authDomain: "metria-909a2.firebaseapp.com",
+    databaseURL: "https://metria-909a2-default-rtdb.firebaseio.com",
+    projectId: "metria-909a2",
+    storageBucket: "metria-909a2.firebasestorage.app",
+    messagingSenderId: "919853216954",
+    appId: "1:919853216954:web:b683c43d5d5471ca883e83"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let coins = 0;
+  let tasks = [];
+  let dayClaimedRewards = [];
+  let currentTaskTab = 'todas';
+  let selectedColorHex = '#0f172a';
+  let currentDateOffset = 0;
+
+  const datesHeader = ['13/09', '14/09', '15/09', '16/09', '17/09', '18/09', '19/09/2026'];
+  let habitsData = [
+    { id: 1, name: "✨ Fazer skincare", streak: 4, days: [true, true, false, true, true, true, true] },
+    { id: 2, name: "📿 Rezar o terço", streak: 6, days: [true, true, true, true, true, true, false] },
+    { id: 3, name: "🦷 Passar fio dental", streak: 3, days: [false, true, true, true, false, true, true] }
+  ];
+
+  const aiRewardLibrary = [
+    { id: 1, name: "🍰 Pedir uma sobremesa", cost: 200, icon: "🍰" },
+    { id: 2, name: "🌿 Pausa de 20 min sem telas", cost: 80, icon: "🌿" },
+    { id: 3, name: "🎮 45 min de videogame", cost: 120, icon: "🎮" },
+    { id: 4, name: "☕ Café especial com calma", cost: 60, icon: "☕" },
+    { id: 5, name: "📚 Ler 1 capítulo sem culpa", cost: 70, icon: "📚" },
+    { id: 6, name: "🎧 Ouvir podcast favorito", cost: 90, icon: "🎧" }
+  ];
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      currentUser = user;
+      document.getElementById('auth-box').style.display = 'none';
+      document.getElementById('app-box').style.display = 'flex';
+      syncFromCloud();
+    } else {
+      document.getElementById('auth-box').style.display = 'flex';
+      document.getElementById('app-box').style.display = 'none';
+    }
+  });
+
+  function login() {
+    const email = document.getElementById('auth-email').value.trim();
+    const pass = document.getElementById('auth-pass').value.trim();
+    if (!email || !pass) return alert('Preencha e-mail e senha!');
+
+    auth.signInWithEmailAndPassword(email, pass).catch(err => {
+      auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    });
+  }
+
+  function logout() { auth.signOut(); }
+
+  function syncToCloud() {
+    if (!currentUser) return;
+    db.collection('users').doc(currentUser.uid).set({
+      coins, tasks, habitsData, dayClaimedRewards
+    }, { merge: true });
+  }
+
+  function syncFromCloud() {
+    if (!currentUser) return;
+    db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        coins = data.coins || 0;
+        tasks = data.tasks || [];
+        habitsData = data.habitsData || habitsData;
+        dayClaimedRewards = data.dayClaimedRewards || [];
+        renderTasks();
+        renderHabitsMatrix();
+        updateHomeUI();
+      }
+    });
+  }
+
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('sidebar-overlay').classList.toggle('active');
+  }
+
+  function switchScreen(screen) {
+    document.querySelectorAll('.view-screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    document.getElementById(`view-${screen}`).classList.add('active');
+    document.getElementById(`nav-${screen}`).classList.add('active');
+
+    if (screen === 'rewards') renderRewards();
+    if (screen === 'tasks') renderTasks();
+    if (screen === 'habits') renderHabitsMatrix();
+    if (screen === 'home') updateHomeUI();
+
+    toggleMenu();
+  }
+
+  function toggleClientFields(val) { document.getElementById('prof-fields').style.display = (val === 'profissional') ? 'flex' : 'none'; }
+  function selectColor(hex, el) { selectedColorHex = hex; document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
+
+  function changeDate(offset) {
+    currentDateOffset += offset;
+    const label = document.getElementById('current-view-date');
+    if (currentDateOffset === 0) label.innerText = '19/09/2026 (Hoje)';
+    else label.innerText = `${19 + currentDateOffset}/09/2026`;
+    renderTasks();
+  }
+
+  function evaluatePriorityByAI(text) {
+    const t = text.toLowerCase();
+    if (t.includes('urgente') || t.includes('hoje') || t.includes('reunião') || t.includes('prova') || t.includes('pagar')) return { priority: 'alta', pts: 25 };
+    if (t.includes('comprar') || t.includes('arrumar') || t.includes('ler') || t.includes('limpar')) return { priority: 'baixa', pts: 10 };
+    return { priority: 'media', pts: 15 };
+  }
+
+  function addAiTask() {
+    const input = document.getElementById('task-input');
+    const category = document.getElementById('task-cat-select').value;
+    const clientName = document.getElementById('client-name-input').value.trim();
+    const text = input.value.trim();
+    if (!text) return;
+
+    const aiRes = evaluatePriorityByAI(text);
+    tasks.push({
+      id: Date.now(), text, category,
+      clientName: category === 'profissional' ? (clientName || 'Cliente') : null,
+      clientColor: category === 'profissional' ? selectedColorHex : null,
+      priority: aiRes.priority, pts: aiRes.pts, dateOffset: currentDateOffset, completed: false
+    });
+
+    input.value = '';
+    document.getElementById('client-name-input').value = '';
+    syncToCloud();
+    renderTasks();
+  }
+
+  // Função para Adicionar Novo Hábito Personalizado
+  function addNewHabit() {
+    const input = document.getElementById('habit-input');
+    const name = input.value.trim();
+    if (!name) return;
+
+    habitsData.push({
+      id: Date.now(),
+      name: name,
+      streak: 0,
+      days: [false, false, false, false, false, false, false]
+    });
+
+    input.value = '';
+    syncToCloud();
+    renderHabitsMatrix();
+  }
+
+  function deleteHabit(habitId) {
+    habitsData = habitsData.filter(h => h.id !== habitId);
+    syncToCloud();
+    renderHabitsMatrix();
+  }
+
+  function toggleTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    task.completed = !task.completed;
+    coins += task.completed ? task.pts : -task.pts;
+    if (coins < 0) coins = 0;
+    syncToCloud();
+    renderTasks();
+  }
+
+  function deleteTask(id) { tasks = tasks.filter(t => t.id !== id); syncToCloud(); renderTasks(); }
+
+  function setTaskTab(tab, btn) {
+    currentTaskTab = tab;
+    document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTasks();
+  }
+
+  function renderTasks() {
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    let filtered = tasks.filter(t => t.dateOffset === currentDateOffset);
+    if (currentTaskTab !== 'todas') filtered = filtered.filter(t => t.category === currentTaskTab);
+
+    filtered.forEach(task => {
+      const card = document.createElement('div');
+      card.className = `task-card-modern p-${task.priority} ${task.completed ? 'completed' : ''}`;
+      let clientTag = task.clientName ? `<span class="client-color-pill" style="background:${task.clientColor};">${task.clientName}</span>` : '';
+
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+          <div>
+            <div style="font-size:0.83rem;">${task.text}</div>
+            ${clientTag}
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <small style="font-size:0.7rem; color:var(--text-sub);">+${task.pts} pts</small>
+          <button class="task-actions-btn" onclick="deleteTask(${task.id})" style="color:var(--accent-red);">🗑️</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    updateProgress();
+  }
+
+  function renderHabitsMatrix() {
+    const container = document.getElementById('habit-matrix');
+    container.innerHTML = '';
+
+    habitsData.forEach(habit => {
+      const row = document.createElement('div');
+      row.className = 'habit-row-matrix';
+      let daysHtml = '';
+      habit.days.forEach((done, index) => {
+        daysHtml += `
+          <div class="day-chip ${done ? 'completed' : ''}" onclick="toggleHabitDay(${habit.id}, ${index})">
+            <span>${datesHeader[index]}</span>
+            <b style="font-size:0.9rem;">${done ? '✓' : '○'}</b>
+          </div>
+        `;
+      });
+
+      row.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.85rem; font-weight:600;">${habit.name}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.72rem; color:var(--accent-purple); font-weight:600;">🔥 ${habit.streak} dias</span>
+            <button class="task-actions-btn" onclick="deleteHabit(${habit.id})" style="color:var(--accent-red); font-size:0.75rem;">🗑️</button>
+          </div>
+        </div>
+        <div class="habit-days-scroll">${daysHtml}</div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  function toggleHabitDay(habitId, dayIndex) {
+    const habit = habitsData.find(h => h.id === habitId);
+    if (!habit) return;
+    habit.days[dayIndex] = !habit.days[dayIndex];
+    coins += habit.days[dayIndex] ? 10 : -10;
+    if (coins < 0) coins = 0;
+    syncToCloud();
+    renderHabitsMatrix();
+  }
+
+  function renderRewards() {
+    const grid = document.getElementById('rewards-grid');
+    grid.innerHTML = '';
+    let available = aiRewardLibrary.filter(r => !dayClaimedRewards.includes(r.id));
+
+    available.forEach(reward => {
+      const card = document.createElement('div');
+      card.className = 'reward-square-card';
+      card.innerHTML = `
+        <span style="font-size:1.8rem;">${reward.icon}</span>
+        <div style="font-size:0.8rem; font-weight:500;">${reward.name}</div>
+        <button class="reward-square-btn" onclick="buyReward(${reward.id}, '${reward.name}', ${reward.cost})">
+          ${reward.cost} moedas
+        </button>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function buyReward(id, name, cost) {
+    if (coins >= cost) {
+      coins -= cost;
+      dayClaimedRewards.push(id);
+      syncToCloud();
+      renderRewards();
+      updateProgress();
+    } else { alert(`❌ Falta de moedas!`); }
+  }
+
+  function updateProgress() {
+    const todayTasks = tasks.filter(t => t.dateOffset === 0);
+    const total = todayTasks.length;
+    const completed = todayTasks.filter(t => t.completed).length;
+    const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-percent').innerText = pct + '%';
+    document.getElementById('coins-count').innerText = coins;
+    updateHomeUI();
+  }
+
+  function updateHomeUI() {
+    const todayTasks = tasks.filter(t => t.dateOffset === 0);
+    const completed = todayTasks.filter(t => t.completed).length;
+    const total = todayTasks.length;
+    const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    const habitsDoneToday = habitsData.filter(h => h.days[6]).length;
+
+    document.getElementById('dash-pending').innerText = total - completed;
+    document.getElementById('dash-completed').innerText = completed;
+    document.getElementById('dash-rate').innerText = `${pct}%`;
+    document.getElementById('dash-habits-count').innerText = `${habitsDoneToday}/${habitsData.length}`;
+  }
+</script>
+</body>
+</html>
