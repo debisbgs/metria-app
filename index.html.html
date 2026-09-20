@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Metria - Produtividade, Hábitos & Recompensas</title>
+  <title>Metria - Performance & Produtividade</title>
   
   <!-- Configurações PWA -->
   <meta name="theme-color" content="#3b82f6">
@@ -33,23 +33,14 @@
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
       --accent-red: #ef4444;
+      --accent-lime: #84cc16;
       --text-main: #0f172a;
       --text-sub: #64748b;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: 'Poppins', system-ui, sans-serif; 
-      letter-spacing: -0.3px; 
-    }
-
-    html, body {
-      width: 100%;
-      overflow-x: hidden;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.3px; }
+    html, body { width: 100%; overflow-x: hidden; }
 
     body {
       background: var(--bg);
@@ -64,7 +55,6 @@
       min-height: 100vh;
     }
 
-    /* Tela de Autenticação / Login */
     .auth-container {
       width: 100%;
       max-width: 400px;
@@ -80,27 +70,9 @@
       margin-top: 20px;
     }
 
-    .auth-input {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      outline: none;
-      font-size: 0.88rem;
-    }
+    .auth-input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--card-border); outline: none; font-size: 0.88rem; }
+    .auth-btn { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--accent-blue); color: white; font-weight: 600; cursor: pointer; }
 
-    .auth-btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      background: var(--accent-blue);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* Container Principal Responsivo */
     .app-card {
       width: 100%;
       max-width: 480px;
@@ -117,19 +89,11 @@
       position: relative;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 10px;
-    }
-
+    .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
     .app-title-fixed { font-size: 1.1rem; font-weight: 700; color: var(--accent-blue); }
     .menu-toggle { background: #fff; border: 1px solid var(--card-border); width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
     .coins-display { background: #fff; border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 12px; font-weight: 600; color: #d97706; font-size: 0.82rem; }
 
-    /* Sidebar Drawer */
     .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
     .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #ffffff; z-index: 101; padding: 30px 20px; display: flex; flex-direction: column; gap: 24px; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.08); transition: left 0.3s ease; }
@@ -138,7 +102,18 @@
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: transparent; border: none; color: var(--text-sub); font-weight: 500; font-size: 0.92rem; cursor: pointer; width: 100%; text-align: left; }
     .nav-item.active, .nav-item:hover { background: rgba(59, 130, 246, 0.08); color: var(--accent-blue); }
 
-    /* Meta de 80% */
+    .focus-banner {
+      background: linear-gradient(135deg, rgba(132, 204, 22, 0.15), rgba(16, 185, 129, 0.15));
+      border: 1px solid rgba(132, 204, 22, 0.4);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .focus-title { font-size: 0.68rem; font-weight: 700; color: #4d7c0f; text-transform: uppercase; }
+    .focus-text { font-size: 0.82rem; font-weight: 600; color: var(--text-main); border: none; background: transparent; outline: none; width: 100%; }
+
     .meta-box { background: #ffffff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; }
     .meta-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; color: var(--text-sub); }
     .progress-bar-track { height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
@@ -152,16 +127,10 @@
     .dash-card-val { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); }
     .dash-card-lbl { font-size: 0.7rem; color: var(--text-sub); }
 
-    /* Formulários Ajustados para Celular */
-    .task-form-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .task-input-row { display: flex; flex-direction: column; gap: 8px; }
+    .task-form-modern { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; position: relative; }
     
-    @media (min-width: 400px) {
-      .task-input-row { flex-direction: row; }
-    }
-
-    input[type="text"], select { 
-      width: 100%;
+    input[type="text"], input[type="number"], select { 
+      width: 100%; 
       padding: 10px 12px; 
       border-radius: 10px; 
       border: 1px solid var(--card-border); 
@@ -177,8 +146,8 @@
     .date-navigator { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--card-border); padding: 8px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
     .date-nav-btn { background: none; border: none; color: var(--accent-blue); cursor: pointer; font-weight: bold; }
 
-    .category-tabs { display: flex; gap: 4px; background: #e2e8f0; padding: 3px; border-radius: 10px; }
-    .cat-tab-btn { flex: 1; padding: 6px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 0.75rem; font-weight: 500; cursor: pointer; }
+    .category-tabs { display: flex; gap: 4px; background: #e2e8f0; padding: 3px; border-radius: 10px; overflow-x: auto; }
+    .cat-tab-btn { flex: 1; min-width: 65px; padding: 6px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-size: 0.72rem; font-weight: 500; cursor: pointer; text-align: center; white-space: nowrap; }
     .cat-tab-btn.active { background: #fff; color: var(--accent-blue); font-weight: 600; }
 
     .task-list-modern { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
@@ -191,22 +160,52 @@
     .client-color-pill { font-size: 0.68rem; padding: 2px 8px; border-radius: 8px; color: white; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; }
     .task-actions-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; opacity: 0.7; }
 
-    /* Hábitos Responsivos */
     .habit-matrix-container { display: flex; flex-direction: column; gap: 10px; }
     .habit-row-matrix { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
     .habit-days-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
     .day-chip { min-width: 50px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; font-size: 0.68rem; flex-shrink: 0; }
     .day-chip.completed { background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); font-weight: 600; }
 
-    /* Recompensas Sem Corte de Texto/Botão */
-    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 420px; overflow-y: auto; padding-bottom: 8px; }
-    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; }
+    .rewards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 320px; overflow-y: auto; padding-bottom: 8px; }
+    .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; position: relative; }
     .reward-square-btn { background: rgba(245, 158, 11, 0.12); color: #d97706; padding: 8px 10px; border-radius: 10px; font-weight: 600; font-size: 0.72rem; border: none; cursor: pointer; width: 100%; }
+
+    /* Popover Seletor de Emoji Ajustado e Responsivo */
+    .emoji-popover {
+      display: none;
+      position: absolute;
+      top: 48px;
+      left: 0;
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+      z-index: 100;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    .emoji-popover.active { display: grid; }
+    .emoji-option {
+      font-size: 1.25rem;
+      padding: 6px 2px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+      user-select: none;
+    }
+    .emoji-option:hover { background: rgba(59, 130, 246, 0.12); }
+
+    .insights-box { background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
   </style>
 </head>
 <body>
 
-<!-- TELA DE AUTENTICAÇÃO / LOGIN -->
 <div class="auth-container" id="auth-box">
   <h2 style="color: var(--accent-blue);">⚡ Metria</h2>
   <p style="font-size: 0.8rem; color: var(--text-sub);">Sincronize suas tarefas e hábitos entre celular e computador.</p>
@@ -215,12 +214,16 @@
   <button class="auth-btn" onclick="login()">Entrar / Cadastrar</button>
 </div>
 
-<!-- APLICATIVO PRINCIPAL -->
 <div class="app-card" id="app-box">
   <div class="top-bar">
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="app-title-fixed">⚡ Metria</div>
     <div class="coins-display">🪙 <span id="coins-count">0</span></div>
+  </div>
+
+  <div class="focus-banner">
+    <span class="focus-title">🎯 Objetivo Atual</span>
+    <input type="text" id="main-goal-input" class="focus-text" value="Construir meu negócio & manter hábitos saudáveis" onchange="saveGoal()">
   </div>
 
   <div class="meta-box">
@@ -237,7 +240,7 @@
   <div class="view-screen active" id="view-home">
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <h3 style="font-size: 0.9rem;">Painel do dia</h3>
-      <span style="font-size:0.72rem; color:var(--accent-blue); font-weight:600;">📅 Sáb, 19/09/2026</span>
+      <span id="today-date-badge" style="font-size:0.72rem; color:var(--accent-blue); font-weight:600;">📅 Carregando...</span>
     </div>
 
     <div class="dashboard-grid">
@@ -273,20 +276,23 @@
 
     <div class="date-navigator">
       <button class="date-nav-btn" onclick="changeDate(-1)">◄ Anterior</button>
-      <span id="current-view-date">19/09/2026 (Hoje)</span>
+      <span id="current-view-date">Hoje</span>
       <button class="date-nav-btn" onclick="changeDate(1)">Próximo ►</button>
     </div>
 
     <div class="task-form-modern">
-      <div class="task-input-row">
-        <input type="text" id="task-input" placeholder="Digite sua tarefa..." style="flex:1;">
-        <select id="task-cat-select" onchange="toggleClientFields(this.value)">
-          <option value="pessoal">Pessoal</option>
-          <option value="profissional">Profissional</option>
-        </select>
-      </div>
+      <input type="text" id="task-input" placeholder="Digite o nome da sua tarefa...">
+      
+      <select id="task-cat-select" onchange="toggleClientFields(this.value)">
+        <option value="pessoal">Categoria: Pessoal</option>
+        <option value="profissional">Categoria: Profissional</option>
+        <option value="saude">Categoria: Saúde</option>
+        <option value="estudos">Categoria: Estudos</option>
+        <option value="financeiro">Categoria: Financeiro</option>
+        <option value="autocuidado">Categoria: Autocuidado</option>
+      </select>
 
-      <div class="task-input-row" id="prof-fields" style="display:none; flex-direction:column; gap:6px;">
+      <div id="prof-fields" style="display:none; flex-direction:column; gap:6px;">
         <input type="text" id="client-name-input" placeholder="Nome do cliente (ex: Cliente Ana)">
         <div style="font-size:0.72rem; color:var(--text-sub);">Selecione a cor do cliente:</div>
         <div class="color-swatch-picker">
@@ -308,6 +314,8 @@
       <button class="cat-tab-btn active" onclick="setTaskTab('todas', this)">Todas</button>
       <button class="cat-tab-btn" onclick="setTaskTab('pessoal', this)">Pessoal</button>
       <button class="cat-tab-btn" onclick="setTaskTab('profissional', this)">Profissional</button>
+      <button class="cat-tab-btn" onclick="setTaskTab('saude', this)">Saúde</button>
+      <button class="cat-tab-btn" onclick="setTaskTab('estudos', this)">Estudos</button>
     </div>
 
     <div class="task-list-modern" id="task-list"></div>
@@ -321,25 +329,101 @@
     </div>
 
     <div class="task-form-modern">
-      <div class="task-input-row">
-        <input type="text" id="habit-input" placeholder="Novo hábito (ex: Ler 10 pág, Meditar...)" style="flex:1;">
-        <button onclick="addNewHabit()" style="background:var(--accent-purple); color:white; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:600; font-size:0.8rem; width: 100%;">+ Criar</button>
+      <input type="text" id="habit-input" placeholder="Novo hábito (ex: Água, Leitura...)">
+      <select id="habit-type-select" onchange="toggleHabitTargetInput(this.value)">
+        <option value="check">Tipo: Check (✓)</option>
+        <option value="numeric">Tipo: Numérico/Quantidade</option>
+      </select>
+      
+      <div id="habit-target-row" style="display: none;">
+        <input type="number" id="habit-target-input" placeholder="Meta diária (ex: 2000 ml, 10 pág)">
       </div>
+      <button onclick="addNewHabit()" style="background:var(--accent-purple); color:white; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:600; font-size:0.8rem; width: 100%;">+ Criar Hábito</button>
     </div>
 
     <div class="habit-matrix-container" id="habit-matrix"></div>
   </div>
 
-  <!-- TELA 4: RECOMPENSAS (REAJUSTADA) -->
+  <!-- TELA 4: RECOMPENSAS (POPOVER DE EMOJIS EXPANDIDO & RESPONSIVO) -->
   <div class="view-screen" id="view-rewards">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3 style="font-size: 0.9rem;">Recompensas do dia</h3>
       <button onclick="refreshAiRewards()" style="background:none; border:none; color:var(--accent-blue); font-size:0.72rem; cursor:pointer; font-weight:600;">🔄 Gerar novas</button>
     </div>
+
+    <!-- Criador de Recompensas -->
+    <div class="task-form-modern">
+      <div style="display:flex; gap:6px; position:relative;">
+        <input type="text" id="custom-reward-icon" placeholder="Emoji" readonly onclick="toggleEmojiPicker(event)" style="max-width: 80px; text-align:center; cursor:pointer; background:#fff;">
+        
+        <!-- Popover com Mais de 45 Emojis Organizados -->
+        <div class="emoji-popover" id="emoji-picker-popover" onclick="event.stopPropagation()">
+          <!-- Comidas & Bebidas -->
+          <div class="emoji-option" onclick="selectEmoji('🍕')">🍕</div>
+          <div class="emoji-option" onclick="selectEmoji('🍰')">🍰</div>
+          <div class="emoji-option" onclick="selectEmoji('☕')">☕</div>
+          <div class="emoji-option" onclick="selectEmoji('🍦')">🍦</div>
+          <div class="emoji-option" onclick="selectEmoji('🍿')">🍿</div>
+          <div class="emoji-option" onclick="selectEmoji('🍫')">🍫</div>
+          <div class="emoji-option" onclick="selectEmoji('🍔')">🍔</div>
+          <div class="emoji-option" onclick="selectEmoji('🧃')">🧃</div>
+
+          <!-- Lazer & Entretenimento -->
+          <div class="emoji-option" onclick="selectEmoji('🎮')">🎮</div>
+          <div class="emoji-option" onclick="selectEmoji('🎬')">🎬</div>
+          <div class="emoji-option" onclick="selectEmoji('🎧')">🎧</div>
+          <div class="emoji-option" onclick="selectEmoji('🎨')">🎨</div>
+          <div class="emoji-option" onclick="selectEmoji('📚')">📚</div>
+          <div class="emoji-option" onclick="selectEmoji('🎤')">🎤</div>
+          <div class="emoji-option" onclick="selectEmoji('🎯')">🎯</div>
+          <div class="emoji-option" onclick="selectEmoji('🎟️')">🎟️</div>
+
+          <!-- Descanso & Bem-estar -->
+          <div class="emoji-option" onclick="selectEmoji('🛌')">🛌</div>
+          <div class="emoji-option" onclick="selectEmoji('🌿')">🌿</div>
+          <div class="emoji-option" onclick="selectEmoji('🧘')">🧘</div>
+          <div class="emoji-option" onclick="selectEmoji('🛁')">🛁</div>
+          <div class="emoji-option" onclick="selectEmoji('🏖️')">🏖️</div>
+          <div class="emoji-option" onclick="selectEmoji('💆')">💆</div>
+          <div class="emoji-option" onclick="selectEmoji('🕯️')">🕯️</div>
+          <div class="emoji-option" onclick="selectEmoji('😴')">😴</div>
+
+          <!-- Compras, Presentes & Estilo -->
+          <div class="emoji-option" onclick="selectEmoji('🎁')">🎁</div>
+          <div class="emoji-option" onclick="selectEmoji('🛍️')">🛍️</div>
+          <div class="emoji-option" onclick="selectEmoji('👗')">👗</div>
+          <div class="emoji-option" onclick="selectEmoji('👟')">👟</div>
+          <div class="emoji-option" onclick="selectEmoji('💄')">💄</div>
+          <div class="emoji-option" onclick="selectEmoji('💎')">💎</div>
+          <div class="emoji-option" onclick="selectEmoji('📱')">📱</div>
+          <div class="emoji-option" onclick="selectEmoji('⌚')">⌚</div>
+
+          <!-- Conquistas & Viagens -->
+          <div class="emoji-option" onclick="selectEmoji('🏆')">🏆</div>
+          <div class="emoji-option" onclick="selectEmoji('⭐')">⭐</div>
+          <div class="emoji-option" onclick="selectEmoji('✈️')">✈️</div>
+          <div class="emoji-option" onclick="selectEmoji('🚗')">🚗</div>
+          <div class="emoji-option" onclick="selectEmoji('🎉')">🎉</div>
+          <div class="emoji-option" onclick="selectEmoji('💰')">💰</div>
+          <div class="emoji-option" onclick="selectEmoji('👑')">👑</div>
+          <div class="emoji-option" onclick="selectEmoji('🚀')">🚀</div>
+        </div>
+
+        <input type="text" id="custom-reward-name" placeholder="Nome da recompensa..." style="flex:1;" oninput="aiCalculateRewardCost(this.value)">
+      </div>
+      
+      <div style="display:flex; align-items:center; gap:8px;">
+        <input type="number" id="custom-reward-cost" placeholder="Custo em moedas (calculado pela IA...)">
+        <small style="font-size:0.65rem; color:var(--accent-purple); font-weight:600; white-space:nowrap;">✨ IA Preço Justo</small>
+      </div>
+
+      <button onclick="addCustomReward()" style="background:var(--accent-yellow); color:white; border:none; border-radius:10px; padding:10px; cursor:pointer; font-weight:600; font-size:0.8rem; width: 100%;">+ Criar Nova Recompensa</button>
+    </div>
+
     <div class="rewards-grid" id="rewards-grid"></div>
   </div>
 
-  <!-- TELA 5: ESTATÍSTICAS COMPLETAS (DIÁRIA, SEMANAL E MENSAL) -->
+  <!-- TELA 5: ESTATÍSTICAS COMPLETAS & INSIGHTS DA IA -->
   <div class="view-screen" id="view-stats">
     <h3 style="font-size: 0.9rem;">Estatísticas completas</h3>
 
@@ -363,19 +447,17 @@
       </div>
     </div>
 
-    <div class="dash-card">
-      <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-green);">🗓️ Desempenho Mensal</div>
-      <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.78rem; color:var(--text-sub);">
-        <span>Total de tarefas no mês:</span> <b id="st-month-tasks">0</b>
+    <div class="insights-box">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); display:flex; align-items:center; gap:6px;">
+        ✨ Insights & Micro-orientações da IA
       </div>
-      <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.78rem; color:var(--text-sub);">
-        <span>Acumulado total de moedas:</span> <b id="st-month-coins" style="color:#d97706;">0</b>
-      </div>
+      <p id="ai-insight-text" style="font-size: 0.75rem; color: var(--text-main); line-height: 1.4;">
+        Analisando seu ritmo... Continue concluindo suas tarefas para receber diagnósticos personalizados da sua semana!
+      </p>
     </div>
   </div>
 </div>
 
-<!-- Sidebar Drawer -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebar">
   <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border); padding-bottom:16px;">
@@ -393,7 +475,6 @@
 </div>
 
 <script>
-  // CONFIGURAÇÃO REAL DO FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyA4BePbgAzCUqTyjaatD5hyr2sYjU8a6kQ",
     authDomain: "metria-909a2.firebaseapp.com",
@@ -415,15 +496,34 @@
   let currentTaskTab = 'todas';
   let selectedColorHex = '#0f172a';
   let currentDateOffset = 0;
+  let mainGoal = "Construir meu negócio & manter hábitos saudáveis";
 
-  const datesHeader = ['13/09', '14/09', '15/09', '16/09', '17/09', '18/09', '19/09/2026'];
+  function getFormattedDate(offset = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function getShortDate(offset = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    return `${day}/${month}`;
+  }
+
+  const datesHeader = [-6, -5, -4, -3, -2, -1, 0].map(off => getShortDate(off));
+
   let habitsData = [
-    { id: 1, name: "✨ Fazer skincare", streak: 4, days: [true, true, false, true, true, true, true] },
-    { id: 2, name: "📿 Rezar o terço", streak: 6, days: [true, true, true, true, true, true, false] },
-    { id: 3, name: "🦷 Passar fio dental", streak: 3, days: [false, true, true, true, false, true, true] }
+    { id: 1, name: "✨ Fazer skincare", type: "check", streak: 4, days: [true, true, false, true, true, true, true] },
+    { id: 2, name: "📿 Rezar o terço", type: "check", streak: 6, days: [true, true, true, true, true, true, false] },
+    { id: 3, name: "💧 Beber Água (ml)", type: "numeric", target: 2000, progress: 1500, streak: 3, days: [false, true, true, true, false, true, true] }
   ];
 
-  const aiRewardLibrary = [
+  let aiRewardLibrary = [
     { id: 1, name: "🍰 Pedir uma sobremesa", cost: 200, icon: "🍰" },
     { id: 2, name: "🌿 Pausa de 20 min sem telas", cost: 80, icon: "🌿" },
     { id: 3, name: "🎮 45 min de videogame", cost: 120, icon: "🎮" },
@@ -432,17 +532,38 @@
     { id: 6, name: "🎧 Ouvir podcast favorito", cost: 90, icon: "🎧" }
   ];
 
+  // Fechar popover ao clicar fora dele
+  document.addEventListener('click', function(e) {
+    const pop = document.getElementById('emoji-picker-popover');
+    const iconInput = document.getElementById('custom-reward-icon');
+    if (pop && pop.classList.contains('active') && e.target !== pop && e.target !== iconInput) {
+      pop.classList.remove('active');
+    }
+  });
+
   auth.onAuthStateChanged(user => {
     if (user) {
       currentUser = user;
       document.getElementById('auth-box').style.display = 'none';
       document.getElementById('app-box').style.display = 'flex';
+      initDateDisplay();
       syncFromCloud();
     } else {
       document.getElementById('auth-box').style.display = 'flex';
       document.getElementById('app-box').style.display = 'none';
     }
   });
+
+  function initDateDisplay() {
+    const now = new Date();
+    const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    document.getElementById('today-date-badge').innerText = `📅 ${weekDays[now.getDay()]}, ${getFormattedDate(0)}`;
+  }
+
+  function saveGoal() {
+    mainGoal = document.getElementById('main-goal-input').value.trim();
+    syncToCloud();
+  }
 
   function login() {
     const email = document.getElementById('auth-email').value.trim();
@@ -459,7 +580,7 @@
   function syncToCloud() {
     if (!currentUser) return;
     db.collection('users').doc(currentUser.uid).set({
-      coins, tasks, habitsData, dayClaimedRewards
+      coins, tasks, habitsData, dayClaimedRewards, mainGoal, aiRewardLibrary
     }, { merge: true });
   }
 
@@ -472,8 +593,14 @@
         tasks = data.tasks || [];
         habitsData = data.habitsData || habitsData;
         dayClaimedRewards = data.dayClaimedRewards || [];
+        mainGoal = data.mainGoal || mainGoal;
+        if (data.aiRewardLibrary && data.aiRewardLibrary.length > 0) {
+          aiRewardLibrary = data.aiRewardLibrary;
+        }
+        document.getElementById('main-goal-input').value = mainGoal;
         renderTasks();
         renderHabitsMatrix();
+        renderRewards();
         updateHomeUI();
         updateStatsUI();
       }
@@ -502,13 +629,14 @@
   }
 
   function toggleClientFields(val) { document.getElementById('prof-fields').style.display = (val === 'profissional') ? 'flex' : 'none'; }
+  function toggleHabitTargetInput(val) { document.getElementById('habit-target-row').style.display = (val === 'numeric') ? 'flex' : 'none'; }
   function selectColor(hex, el) { selectedColorHex = hex; document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
 
   function changeDate(offset) {
     currentDateOffset += offset;
     const label = document.getElementById('current-view-date');
-    if (currentDateOffset === 0) label.innerText = '19/09/2026 (Hoje)';
-    else label.innerText = `${19 + currentDateOffset}/09/2026`;
+    if (currentDateOffset === 0) label.innerText = `${getFormattedDate(0)} (Hoje)`;
+    else label.innerText = getFormattedDate(currentDateOffset);
     renderTasks();
   }
 
@@ -519,12 +647,38 @@
     return { priority: 'media', pts: 15 };
   }
 
+  function aiCalculateRewardCost(text) {
+    const t = text.toLowerCase();
+    const costInput = document.getElementById('custom-reward-cost');
+    if (!t) { costInput.value = ''; return; }
+
+    if (t.includes('viagem') || t.includes('folga') || t.includes('comprar') || t.includes('roupa') || t.includes('jantar')) {
+      costInput.value = 350;
+    } else if (t.includes('série') || t.includes('filme') || t.includes('pizza') || t.includes('ifood') || t.includes('jogo')) {
+      costInput.value = 180;
+    } else if (t.includes('doce') || t.includes('café') || t.includes('pausa') || t.includes('descanso')) {
+      costInput.value = 80;
+    } else {
+      costInput.value = 120;
+    }
+  }
+
+  function toggleEmojiPicker(e) {
+    e.stopPropagation();
+    document.getElementById('emoji-picker-popover').classList.toggle('active');
+  }
+
+  function selectEmoji(emoji) {
+    document.getElementById('custom-reward-icon').value = emoji;
+    document.getElementById('emoji-picker-popover').classList.remove('active');
+  }
+
   function addAiTask() {
     const input = document.getElementById('task-input');
     const category = document.getElementById('task-cat-select').value;
     const clientName = document.getElementById('client-name-input').value.trim();
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) return alert('Digite o nome da tarefa!');
 
     const aiRes = evaluatePriorityByAI(text);
     tasks.push({
@@ -542,17 +696,23 @@
 
   function addNewHabit() {
     const input = document.getElementById('habit-input');
+    const type = document.getElementById('habit-type-select').value;
+    const targetVal = parseFloat(document.getElementById('habit-target-input').value) || 0;
     const name = input.value.trim();
-    if (!name) return;
+    if (!name) return alert('Digite o nome do hábito!');
 
     habitsData.push({
       id: Date.now(),
-      name: name,
+      name,
+      type,
+      target: type === 'numeric' ? targetVal : null,
+      progress: 0,
       streak: 0,
       days: [false, false, false, false, false, false, false]
     });
 
     input.value = '';
+    document.getElementById('habit-target-input').value = '';
     syncToCloud();
     renderHabitsMatrix();
   }
@@ -629,9 +789,14 @@
         `;
       });
 
+      let extraProgressText = habit.type === 'numeric' ? `<span style="font-size:0.68rem; color:var(--accent-blue);">Meta: ${habit.target}</span>` : '';
+
       row.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;">${habit.name}</span>
+          <div>
+            <span style="font-size:0.82rem; font-weight:600;">${habit.name}</span>
+            ${extraProgressText}
+          </div>
           <div style="display:flex; align-items:center; gap:6px;">
             <span style="font-size:0.68rem; color:var(--accent-purple); font-weight:600;">🔥 ${habit.streak} dias</span>
             <button class="task-actions-btn" onclick="deleteHabit(${habit.id})" style="color:var(--accent-red); font-size:0.75rem;">🗑️</button>
@@ -662,6 +827,7 @@
       const card = document.createElement('div');
       card.className = 'reward-square-card';
       card.innerHTML = `
+        <button onclick="deleteCustomReward(${reward.id})" style="position:absolute; top:6px; right:8px; background:none; border:none; color:var(--accent-red); font-size:0.75rem; cursor:pointer;">✕</button>
         <span style="font-size:1.6rem;">${reward.icon}</span>
         <div style="font-size:0.75rem; font-weight:500;">${reward.name}</div>
         <button class="reward-square-btn" onclick="buyReward(${reward.id}, '${reward.name}', ${reward.cost})">
@@ -670,6 +836,34 @@
       `;
       grid.appendChild(card);
     });
+  }
+
+  function addCustomReward() {
+    const name = document.getElementById('custom-reward-name').value.trim();
+    const cost = parseInt(document.getElementById('custom-reward-cost').value);
+    const icon = document.getElementById('custom-reward-icon').value.trim() || "🎁";
+
+    if (!name || isNaN(cost) || cost <= 0) return alert('Preencha o nome e o valor das moedas!');
+
+    aiRewardLibrary.push({ id: Date.now(), name, cost, icon });
+
+    document.getElementById('custom-reward-name').value = '';
+    document.getElementById('custom-reward-cost').value = '';
+    document.getElementById('custom-reward-icon').value = '';
+
+    syncToCloud();
+    renderRewards();
+  }
+
+  function deleteCustomReward(id) {
+    aiRewardLibrary = aiRewardLibrary.filter(r => r.id !== id);
+    syncToCloud();
+    renderRewards();
+  }
+
+  function refreshAiRewards() {
+    aiRewardLibrary.sort(() => Math.random() - 0.5);
+    renderRewards();
   }
 
   function buyReward(id, name, cost) {
@@ -722,8 +916,14 @@
     document.getElementById('st-week-tasks').innerText = completedTotal;
     document.getElementById('st-week-rate').innerText = `${successRateWeek}%`;
 
-    document.getElementById('st-month-tasks').innerText = totalAllTasks;
-    document.getElementById('st-month-coins').innerText = coins;
+    const textEl = document.getElementById('ai-insight-text');
+    if (successRateWeek >= 80) {
+      textEl.innerText = `Sua consistência está excelente nesta semana (${successRateWeek}% de conclusão). Mantenha o foco no seu objetivo principal!`;
+    } else if (successRateWeek >= 50) {
+      textEl.innerText = `Você atingiu ${successRateWeek}% das metas. Tente priorizar 1 ou 2 tarefas essenciais no início do dia para aumentar seu ritmo.`;
+    } else {
+      textEl.innerText = `Sua taxa de conclusão está em ${successRateWeek}%. Elimine distrações pequenas e foque nas tarefas de maior prioridade para recuperar suas moedas.`;
+    }
   }
 </script>
 </body>
