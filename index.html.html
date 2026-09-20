@@ -40,7 +40,13 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.3px; }
-    html, body { width: 100%; overflow-x: hidden; }
+    
+    /* PERMITIR PULL-TO-REFRESH NATIVO */
+    html, body { 
+      width: 100%; 
+      min-height: 100%;
+      overscroll-behavior-y: contain; /* Habilita o gesto do navegador */
+    }
 
     body {
       background: var(--bg);
@@ -170,7 +176,6 @@
     .reward-square-card { background: #fff; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; gap: 8px; position: relative; }
     .reward-square-btn { background: rgba(245, 158, 11, 0.12); color: #d97706; padding: 8px 10px; border-radius: 10px; font-weight: 600; font-size: 0.72rem; border: none; cursor: pointer; width: 100%; }
 
-    /* Popover Seletor de Emoji Ajustado e Responsivo */
     .emoji-popover {
       display: none;
       position: absolute;
@@ -344,7 +349,7 @@
     <div class="habit-matrix-container" id="habit-matrix"></div>
   </div>
 
-  <!-- TELA 4: RECOMPENSAS (POPOVER DE EMOJIS EXPANDIDO & RESPONSIVO) -->
+  <!-- TELA 4: RECOMPENSAS -->
   <div class="view-screen" id="view-rewards">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3 style="font-size: 0.9rem;">Recompensas do dia</h3>
@@ -356,9 +361,7 @@
       <div style="display:flex; gap:6px; position:relative;">
         <input type="text" id="custom-reward-icon" placeholder="Emoji" readonly onclick="toggleEmojiPicker(event)" style="max-width: 80px; text-align:center; cursor:pointer; background:#fff;">
         
-        <!-- Popover com Mais de 45 Emojis Organizados -->
         <div class="emoji-popover" id="emoji-picker-popover" onclick="event.stopPropagation()">
-          <!-- Comidas & Bebidas -->
           <div class="emoji-option" onclick="selectEmoji('🍕')">🍕</div>
           <div class="emoji-option" onclick="selectEmoji('🍰')">🍰</div>
           <div class="emoji-option" onclick="selectEmoji('☕')">☕</div>
@@ -367,8 +370,6 @@
           <div class="emoji-option" onclick="selectEmoji('🍫')">🍫</div>
           <div class="emoji-option" onclick="selectEmoji('🍔')">🍔</div>
           <div class="emoji-option" onclick="selectEmoji('🧃')">🧃</div>
-
-          <!-- Lazer & Entretenimento -->
           <div class="emoji-option" onclick="selectEmoji('🎮')">🎮</div>
           <div class="emoji-option" onclick="selectEmoji('🎬')">🎬</div>
           <div class="emoji-option" onclick="selectEmoji('🎧')">🎧</div>
@@ -377,8 +378,6 @@
           <div class="emoji-option" onclick="selectEmoji('🎤')">🎤</div>
           <div class="emoji-option" onclick="selectEmoji('🎯')">🎯</div>
           <div class="emoji-option" onclick="selectEmoji('🎟️')">🎟️</div>
-
-          <!-- Descanso & Bem-estar -->
           <div class="emoji-option" onclick="selectEmoji('🛌')">🛌</div>
           <div class="emoji-option" onclick="selectEmoji('🌿')">🌿</div>
           <div class="emoji-option" onclick="selectEmoji('🧘')">🧘</div>
@@ -387,8 +386,6 @@
           <div class="emoji-option" onclick="selectEmoji('💆')">💆</div>
           <div class="emoji-option" onclick="selectEmoji('🕯️')">🕯️</div>
           <div class="emoji-option" onclick="selectEmoji('😴')">😴</div>
-
-          <!-- Compras, Presentes & Estilo -->
           <div class="emoji-option" onclick="selectEmoji('🎁')">🎁</div>
           <div class="emoji-option" onclick="selectEmoji('🛍️')">🛍️</div>
           <div class="emoji-option" onclick="selectEmoji('👗')">👗</div>
@@ -397,8 +394,6 @@
           <div class="emoji-option" onclick="selectEmoji('💎')">💎</div>
           <div class="emoji-option" onclick="selectEmoji('📱')">📱</div>
           <div class="emoji-option" onclick="selectEmoji('⌚')">⌚</div>
-
-          <!-- Conquistas & Viagens -->
           <div class="emoji-option" onclick="selectEmoji('🏆')">🏆</div>
           <div class="emoji-option" onclick="selectEmoji('⭐')">⭐</div>
           <div class="emoji-option" onclick="selectEmoji('✈️')">✈️</div>
@@ -532,7 +527,6 @@
     { id: 6, name: "🎧 Ouvir podcast favorito", cost: 90, icon: "🎧" }
   ];
 
-  // Fechar popover ao clicar fora dele
   document.addEventListener('click', function(e) {
     const pop = document.getElementById('emoji-picker-popover');
     const iconInput = document.getElementById('custom-reward-icon');
